@@ -9,7 +9,7 @@ body {
 #exitime {
     /* Цвет заливки */
     fill: #000000;
-    fill-opacity: 0.8;
+    fill-opacity: 1;
     
     /* Фильтры */
     filter: drop-shadow(0 0 3px rgba(0, 0, 0, 1));
@@ -23,6 +23,11 @@ body {
     align-items: center;
     transform: translatey(0px);
     animation: float 6s ease-in-out infinite;
+    cursor: pointer;
+    position: relative;
+}
+.svg-container:active {
+    transform: scale(0.98);
 }
 
 svg {
@@ -31,6 +36,12 @@ svg {
     max-height: 100%;
     width: auto;
     height: auto;
+    z-index: 2;
+    position: relative;
+}
+
+canvas {
+    z-index: 1;
 }
 
 @keyframes float {
