@@ -1,0 +1,30 @@
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#exitime {
+    /* Цвет заливки */
+    fill: black;
+    fill-opacity: 0.8;
+    
+    /* Фильтры */
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 1));
+}
+
+.svg-container {
+    padding: 2%;
+    box-shadow: inset 0 0 0 1px #000000;
+    width: 60vw;
+    will-change: transform;
+}
+
+svg {
+    display: block;      /* убирает зазор снизу */
+    width: 100%;         /* тянется по родителю */
+    height: auto;        /* сохраняет пропорции */
+    overflow: visible;   /* не обрезает трансформации */
+}
