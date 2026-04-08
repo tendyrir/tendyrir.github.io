@@ -1,17 +1,40 @@
 const container = document.querySelector('.svg-container');
-let direction = 1;
-let position = 0;
-const speed = 2;
-const maxOffset = 100; // пикселей вправо от центра
+
+let x = 0;
+let y = 0;
+let dirX = 0;
+let dirY = 0;
+const speed = 0.4;
+const limit = 15;
+
+function updateDirection() {
+    const angle = Math.random() * Math.PI * 2;
+    const targetDirX = Math.cos(angle) * speed;
+    const targetDirY = Math.sin(angle) * speed;
+    
+    // Плавное изменение направления
+    dirX += (targetDirX - dirX) * 0.1;
+    dirY += (targetDirY - dirY) * 0.1;
+}
 
 function animate() {
-    position += speed * direction;
+    // Плавное обновление направления каждый кадр
+    updateDirection();
     
-    if (Math.abs(position) >= maxOffset) {
-        direction *= -1;
+    x += dirX;
+    y += dirY;
+    
+    // Мягкое отражение от границ
+    if (Math.abs(x) > limit) {
+        dirX *= -0.9;
+        x = x > 0 ? limit : -limit;
+    }
+    if (Math.abs(y) > limit) {
+        dirY *= -0.9;
+        y = y > 0 ? limit : -limit;
     }
     
-    container.style.transform = `translateX(${position}px)`;
+    container.style.transform = `translate(${x}px, ${y}px)`;
     requestAnimationFrame(animate);
 }
 
