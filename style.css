@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    /* height: 100vh; */
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,16 +16,34 @@ body {
 }
 
 .svg-container {
-    padding: 2%;
-    /* box-shadow: inset 0 0 0 1px #000000; */
-    width: 60vw;
-    will-change: transform;
-    transition: none; /* js сам сглаживает */
+    width: 100%;
+    height: 80vh;           /* 100% - 10% сверху - 10% снизу = 80% */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translatey(0px);
+    animation: float 6s ease-in-out infinite;
 }
 
 svg {
-    /* display: block; */
-    /* width: 100%; */
-    /* height: auto; */
-    /* overflow: visible; */
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+}
+
+@keyframes float {
+	0% {
+		/* box-shadow: 0 5px 15px 0px rgba(0,0,0,0.6); */
+		transform: translatey(0px);
+	}
+	50% {
+		/* box-shadow: 0 25px 15px 0px rgba(0,0,0,0.2); */
+		transform: translatey(-20px);
+	}
+	100% {
+		/* box-shadow: 0 5px 15px 0px rgba(0,0,0,0.6); */
+		transform: translatey(0px);
+	}
 }
