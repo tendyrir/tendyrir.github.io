@@ -1,92 +1,322 @@
-body {
-    background: #000;
+* {
     margin: 0;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-#exitime {
-    /* Цвет заливки */
+body {
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Левая и правая части */
+.left {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    transition: width 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    overflow: visible;
+}
+
+.right {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    transition: width 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: visible;
+}
+
+/* SVG картинки */
+.left svg, .right svg {
+    width: auto;
+    height: auto;
+    max-width: 90%;
+    max-height: 90%;
+    min-width: 150px;
+    min-height: 150px;
+    transition: all 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+/* Убираем transform полностью */
+.left svg {
+    transform: none;
+}
+
+.right svg {
+    transform: none;
+}
+
+/* При открытии SVG плавно уменьшаются */
+.left.open svg, .right.open svg {
+    max-width: 70%;
+    max-height: 70%;
+}
+
+.exitime-left {
     fill: #000;
     fill-opacity: 1;
-    
-    /* Фильтры */
     filter: drop-shadow(0 0 3px rgba(0, 0, 0, 1));
-    transition: fill 0.5s ease;
+    animation: pulse 2s ease-in-out infinite;
 }
 
-.svg-container {
-    width: 80vw;
-    height: 80vh;
-    max-height: fit-content;
+.exitime-right {
+    fill: #000;
+    fill-opacity: 1;
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 1));
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.05); opacity: 1; }
+}
+
+/* Центральная колонка */
+.center {
+    position: fixed;
+    left: 50%;
+    top: 0;
+    width: 0;
+    height: 100%;
+    /* background: linear-gradient(135deg, #1e1e2f 0%, #2a2a3b 100%); */
+    transition: width 0.6s cubic-bezier(0.645, 0.045, 0.355, 1), left 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+    z-index: 2;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Состояние открыто */
+.left.open {
+    width: 25%;
+}
+
+.right.open {
+    width: 25%;
+}
+
+.center.open {
+    width: 50%;
+    left: 25%;
+}
+
+/* Плеер - плавное появление */
+.player {
+    width: 100%;
+    height: 100%;
+    color: rgb(0, 0, 0);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    transform: translatey(0px);
-    animation: float 6s ease-in-out infinite;
-    cursor: pointer;
-    position: relative;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.95);
+    transition: opacity 0.5s cubic-bezier(0.645, 0.045, 0.355, 1), 
+                visibility 0.5s cubic-bezier(0.645, 0.045, 0.355, 1),
+                transform 0.5s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
-.svg-container:active {
+/* Показываем плеер с эффектом */
+.center.open .player {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+    transition: opacity 0.5s cubic-bezier(0.645, 0.045, 0.355, 1) 0.15s,
+                visibility 0.5s cubic-bezier(0.645, 0.045, 0.355, 1) 0.15s,
+                transform 0.5s cubic-bezier(0.645, 0.045, 0.355, 1) 0.15s;
+}
+
+/* При закрытии - плеер исчезает быстрее */
+.center:not(.open) .player {
+    transition: opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1),
+                visibility 0.3s cubic-bezier(0.645, 0.045, 0.355, 1),
+                transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
     transform: scale(0.98);
 }
 
-.fullfillment {
-    flex: 1;
-}
-
-.fullfillment-wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+/* Контейнер плейлиста */
+.playlist-container {
+    flex: 2;
+    padding: 20px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    z-index: 1;
-    filter: blur(70px);
 }
 
-.fullfillment:nth-child(1) {
-    background: rgb(0, 133, 67);
+.playlist {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
 }
 
-.fullfillment:nth-child(2) {
-    background: rgb(255, 225, 0);
+/* Стили скролла */
+.playlist::-webkit-scrollbar {
+    width: 8px;
 }
 
-.fullfillment:nth-child(3) {
-    background: rgb(231, 0, 0);
+.playlist::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
-svg {
-    display: block;
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    padding: 8%;
-    z-index: 3;
-    position: relative;
-    transition: transform 0.4s ease-out;
+.playlist::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
 }
 
-canvas {
-    z-index: 2;
+.playlist::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.5);
 }
 
-@keyframes float {
-	0% {
-		transform: translatey(0px);
-	}
-	50% {
-		transform: translatey(-30px);
-	}
-	100% {
-		transform: translatey(0px);
-	}
+/* Элементы списка песен - появляются с анимацией */
+.song-item {
+    padding: 12px 15px;
+    margin: 8px 0;
+    background: rgba(136, 118, 118, 0.05);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    font-size: 14px;
+    opacity: 0;
+    transform: translateX(-10px);
+    animation: slideIn 0.4s cubic-bezier(0.645, 0.045, 0.355, 1) forwards;
 }
 
+/* Задержки для появления песен */
+.song-item:nth-child(1) { animation-delay: 0.05s; }
+.song-item:nth-child(2) { animation-delay: 0.1s; }
+.song-item:nth-child(3) { animation-delay: 0.15s; }
+.song-item:nth-child(4) { animation-delay: 0.2s; }
+.song-item:nth-child(5) { animation-delay: 0.25s; }
+.song-item:nth-child(6) { animation-delay: 0.3s; }
+.song-item:nth-child(7) { animation-delay: 0.35s; }
+.song-item:nth-child(8) { animation-delay: 0.4s; }
+.song-item:nth-child(9) { animation-delay: 0.45s; }
+.song-item:nth-child(10) { animation-delay: 0.5s; }
+
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* При закрытии - песни исчезают */
+.center:not(.open) .song-item {
+    animation: slideOut 0.2s cubic-bezier(0.645, 0.045, 0.355, 1) forwards;
+}
+
+@keyframes slideOut {
+    to {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+}
+
+.song-item:hover {
+    background: rgba(255,255,255,0.15);
+    transform: translateX(5px);
+}
+
+.song-item.active {
+    /* background: linear-gradient(135deg, #667eea, #764ba2); */
+    /* border-left: 3px solid #fff; */
+}
+
+/* Управление плеером - плавное появление */
+.player-controls {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+    /* border-top: 1px solid rgba(255,255,255,0.1); */
+    /* border-bottom: 1px solid rgba(255,255,255,0.1); */
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1) 0.2s;
+}
+
+.center.open .player-controls {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+audio {
+    width: 90%;
+    margin: 10px 0;
+}
+
+/* Визуализация - плавное появление */
+.visualizer {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.5);
+    /* background: rgba(0,0,0,0.2); */
+    margin: 10px;
+    border-radius: 10px;
+    letter-spacing: 2px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1) 0.25s;
+}
+
+.center.open .visualizer {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Адаптация для маленьких экранов */
+@media (max-width: 768px) {
+    .left.open, .right.open {
+        width: 20%;
+    }
+    
+    .center.open {
+        width: 60%;
+        left: 20%;
+    }
+    
+    .left svg, .right svg {
+        min-width: 100px;
+        min-height: 100px;
+        max-width: 85%;
+        max-height: 85%;
+    }
+}
+
+@media (max-width: 480px) {
+    .left.open, .right.open {
+        width: 15%;
+    }
+    
+    .center.open {
+        width: 70%;
+        left: 15%;
+    }
+    
+    .song-item {
+        font-size: 11px;
+        padding: 8px 10px;
+    }
+    
+    .left svg, .right svg {
+        min-width: 70px;
+        min-height: 70px;
+        max-width: 80%;
+        max-height: 80%;
+    }
+}
