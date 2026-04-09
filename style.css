@@ -1,4 +1,5 @@
 body {
+    background: #000;
     margin: 0;
     min-height: 100vh;
     display: flex;
@@ -8,25 +9,25 @@ body {
 
 #exitime {
     /* Цвет заливки */
-    fill: #000000;
+    fill: #000;
     fill-opacity: 1;
     
     /* Фильтры */
     filter: drop-shadow(0 0 3px rgba(0, 0, 0, 1));
+    transition: fill 0.3s ease;
 }
 
 .svg-container {
     width: 80vw;
-    height: 80vh;           /* 100% - 10% сверху - 10% снизу = 80% */
+    height: 80vh;
+    max-height: fit-content;
     display: flex;
     flex-direction: column;
-    /* justify-content: space-evenly; */
     align-items: center;
     transform: translatey(0px);
     animation: float 6s ease-in-out infinite;
     cursor: pointer;
     position: relative;
-    border: 2px solid #000000;
 }
 
 .svg-container:active {
@@ -35,9 +36,6 @@ body {
 
 .fullfillment {
     flex: 1;
-    width: 100%;
-    border: #ff0000;
-    border-width: 2px;
 }
 
 .fullfillment-wrapper {
@@ -49,18 +47,19 @@ body {
     display: flex;
     flex-direction: column;
     z-index: 1;
+    filter: blur(70px);
 }
 
 .fullfillment:nth-child(1) {
-    background: rgba(0, 133, 66, 0.5);
+    background: rgb(0, 133, 67);
 }
 
 .fullfillment:nth-child(2) {
-    background: rgba(255, 224, 0, 0.5);
+    background: rgb(255, 225, 0);
 }
 
 .fullfillment:nth-child(3) {
-    background: rgba(231, 0, 1, 0.5);
+    background: rgb(231, 0, 0);
 }
 
 svg {
@@ -69,9 +68,10 @@ svg {
     max-height: 100%;
     width: auto;
     height: auto;
-    padding: 3%;
+    padding: 5%;
     z-index: 3;
     position: relative;
+    transition: transform 0.25s ease-out;
 }
 
 canvas {
@@ -80,15 +80,13 @@ canvas {
 
 @keyframes float {
 	0% {
-		/* box-shadow: 0 5px 15px 0px rgba(0,0,0,0.6); */
 		transform: translatey(0px);
 	}
 	50% {
-		/* box-shadow: 0 25px 15px 0px rgba(0,0,0,0.2); */
-		transform: translatey(-20px);
+		transform: translatey(-30px);
 	}
 	100% {
-		/* box-shadow: 0 5px 15px 0px rgba(0,0,0,0.6); */
 		transform: translatey(0px);
 	}
 }
+

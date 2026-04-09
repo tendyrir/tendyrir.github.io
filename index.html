@@ -16,8 +16,23 @@
 
         <div class="fullfillment-wrapper">
             <div class="fullfillment"></div>
-            <div class="fullfillment"></div>
-            <div class="fullfillment"></div>
+            <div class="fullfillment">
+                <div style="display: flex; flex-direction: row; height: 100%;">
+                    <div
+                        style="flex: 1; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; transform: scaleX(-1);">
+                    </div>
+                    <div
+                        style="flex: 1; display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: bold;">
+                    </div>
+                    <div
+                        style="flex: 1; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold;">
+                    </div>
+                </div>
+            </div>
+            <div class="fullfillment">
+
+            </div>
+            
         </div>
 
         <svg viewBox="0 0 686 927" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -28,8 +43,47 @@
         </svg>
 
 
+        <button id="playPauseBtn" style="
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.0);
+        /* backdrop-filter: blur(10px); */
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: all 0.3s ease;
+        outline: none;
+    ">
+        <svg id="playIcon" width="100" height="100" viewBox="0 0 24 24" fill="white">
+            <path d="M8 5v14l11-7z"/>
+        </svg>
+        <svg id="pauseIcon" width="36" height="36" viewBox="0 0 24 24" fill="white" style="display: none;">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+        </svg>
+    </button>
+
 
     </div>
+    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5" style="
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    z-index: 9999;
+    cursor: pointer;
+    accent-color: white;
+    background: transparent;
+">
+
     <script src="soundwaves.js"></script>
     <script src="audio.js"></script>
 </body>

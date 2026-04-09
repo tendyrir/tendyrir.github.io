@@ -1,104 +1,103 @@
 const container = document.querySelector('.svg-container');
 const audio = document.getElementById('audio');
+const path = document.querySelector('#exitime');
+const svg = document.querySelector('svg');
+const playPauseBtn = document.getElementById('playPauseBtn');
+const playIcon = document.getElementById('playIcon');
+const pauseIcon = document.getElementById('pauseIcon');
+const volumeSlider = document.getElementById('volumeSlider');
 
-// Создаём канвас для волн поверх SVG
-const canvas = document.createElement('canvas');
-const ctx = canvas.getContext('2d');
-canvas.style.position = 'absolute';
-canvas.style.top = '0';
-canvas.style.left = '0';
-canvas.style.width = '100%';
-canvas.style.height = '100%';
-canvas.style.pointerEvents = 'none';
-container.style.position = 'relative';
-container.appendChild(canvas);
+const colors = [
+    'rgb(0, 133, 66)',
+    'rgb(255, 224, 0)',
+    'rgb(231, 0, 1)'
+];
 
-let width, height;
-let waves = [];
-let animationFrame = null;
-const colors = ['#e74c3c', '#2ecc71', '#f1c40f'];
-const bpm = 110;
-const beatInterval = (60 / bpm) * 1000; // ~545ms
+const bpm = 55;
+const beatInterval = (60 / bpm) * 1000;
+const weakBeatOffset = beatInterval / 2;
 
-function resizeCanvas() {
-    const rect = container.getBoundingClientRect();
-    width = rect.width;
-    height = rect.height;
-    canvas.width = width;
-    canvas.height = height;
-}
+let pulseInterval = null;
+let colorIndex = 0;
+let originalColor = '#000';
 
-function createWave() {
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    return {
-        x: width / 2,
-        y: height / 2,
-        radius: 10,
-        maxRadius: Math.min(width, height) * 0.5,
-        opacity: 1,
-        color: color,
-        speed: 1.5,
-        lineWidth: 20
-    };
-}
-
-function drawWaves() {
-    ctx.clearRect(0, 0, width, height);
+function pulse() {
+    path.style.fill = colors[colorIndex];
+    colorIndex = (colorIndex + 1) % colors.length;
     
-    for (let i = waves.length - 1; i >= 0; i--) {
-        const w = waves[i];
-        w.radius += w.speed;
-        w.opacity *= 0.985;
+    const start = performance.now();
+    const duration = 300;
+    
+    function animateScale(time) {
+        const elapsed = time - start;
+        const progress = elapsed / duration;
         
-        if (w.radius >= w.maxRadius || w.opacity <= 0.01) {
-            waves.splice(i, 1);
-            continue;
-        }
-        
-        ctx.beginPath();
-        ctx.arc(w.x, w.y, w.radius, 0, Math.PI * 2);
-        ctx.strokeStyle = w.color;
-        ctx.lineWidth = w.lineWidth;
-        ctx.globalAlpha = w.opacity;
-        ctx.stroke();
-    }
-    
-    if (waves.length > 0 || !audio.paused) {
-        animationFrame = requestAnimationFrame(drawWaves);
-    } else {
-        animationFrame = null;
-    }
-}
-
-function startWaves() {
-    if (animationFrame) return;
-    
-    resizeCanvas();
-    
-    const waveInterval = setInterval(() => {
-        if (audio.paused) {
-            clearInterval(waveInterval);
-            return;
-        }
-        waves.push(createWave());
-    }, beatInterval);
-    
-    drawWaves();
-}
-
-if (container && audio) {
-    container.addEventListener('click', () => {
-        if (audio.paused) {
-            audio.play();
-            startWaves();
+        if (progress < 1) {
+            const scale = 1 + 0.1 * Math.sin(progress * Math.PI);
+            svg.style.transform = `scale(${scale})`;
+            requestAnimationFrame(animateScale);
         } else {
-            audio.pause();
+            svg.style.transform = 'scale(1)';
         }
+    }
+    
+    requestAnimationFrame(animateScale);
+    
+    setTimeout(() => {
+        path.style.fill = originalColor;
+    }, 200);
+}
+
+function startMusic() {
+    audio.play();
+    
+    setTimeout(() => {
+        pulse();
+        pulseInterval = setInterval(pulse, beatInterval);
+    }, weakBeatOffset);
+    
+    playPauseBtn.style.display = 'none';
+}
+
+function stopMusic() {
+    audio.pause();
+    clearInterval(pulseInterval);
+    path.style.fill = originalColor;
+    svg.style.transform = 'scale(1)';
+    pulseInterval = null;
+    
+    playPauseBtn.style.display = 'flex';
+}
+
+// Громкость
+if (volumeSlider && audio) {
+    audio.volume = volumeSlider.value;
+    volumeSlider.addEventListener('input', () => {
+        audio.volume = volumeSlider.value;
     });
 }
 
-window.addEventListener('resize', () => {
-    if (!audio.paused) {
-        resizeCanvas();
-    }
-});
+if (audio && path) {
+    // Клик по кнопке (только Play)
+    playPauseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (audio.paused) {
+            startMusic();
+        }
+    });
+    
+    // Клик в любом месте экрана (Play/Pause), кроме слайдера и кнопки
+    document.body.addEventListener('click', (e) => {
+        if (e.target === volumeSlider || e.target === playPauseBtn || playPauseBtn.contains(e.target)) {
+            return;
+        }
+        
+        if (audio.paused) {
+            startMusic();
+        } else {
+            stopMusic();
+        }
+    });
+    
+    audio.addEventListener('ended', stopMusic);
+}
