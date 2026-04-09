@@ -33,7 +33,7 @@ function pulse() {
         const progress = elapsed / duration;
         
         if (progress < 1) {
-            const scale = 1 + 0.1 * Math.sin(progress * Math.PI);
+            const scale = 1 + 0.2 * Math.sin(progress * Math.PI);
             svg.style.transform = `scale(${scale})`;
             requestAnimationFrame(animateScale);
         } else {
